@@ -1,4 +1,4 @@
-package org.masking.finexpr;
+package org.masking.finexpr.token;
 
 public enum TokenType {
 	
