@@ -2,11 +2,6 @@ package org.masking.finexpr.expr;
 
 import java.math.BigDecimal;
 
-/**
- * 
- * @author masking
- *
- */
 public abstract class Operator {
 
 	private final String symbol;

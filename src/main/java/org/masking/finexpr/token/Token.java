@@ -2,18 +2,32 @@ package org.masking.finexpr.token;
 
 public class Token {
 
-	private String content="";
+	private StringBuilder content;
 	private TokenType type;
 	
 	/** position in origin expression */
 	private int pos;
 	
+	public Token(){
+		content = new StringBuilder(6);
+	}
+	
 	public String getContent() {
-		return content;
+		return content.toString();
 	}
-	public void setContent(String content) {
-		this.content = content;
+	
+	public void append(char ch){
+		content.append(ch);
 	}
+	
+	public char charAt(int index){
+		return content.charAt(index);
+	}
+	
+	public int length(){
+		return content.length();
+	}
+	
 	public TokenType getType() {
 		return type;
 	}

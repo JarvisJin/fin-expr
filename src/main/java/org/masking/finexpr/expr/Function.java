@@ -1,5 +1,7 @@
 package org.masking.finexpr.expr;
 
+import java.math.BigDecimal;
+
 public abstract class Function {
 	
 	private final String name;
@@ -15,5 +17,13 @@ public abstract class Function {
 		this.argNum = argNum;
 	}
 	
-	
+	public abstract BigDecimal apply(BigDecimal... args);
+
+	public String getName() {
+		return name;
+	}
+
+	public int getArgNum() {
+		return argNum;
+	}
 }
