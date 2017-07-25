@@ -22,7 +22,7 @@ public class Tokenizer {
 	private final char CLOSE_PAREN = ')';
 	private final char UNARY_SUFFIX = 'u'; // unary operator suffix : '-' => '-u';  '+' => '+u'
 	
-	private Set<Character> operators;
+	private final Set<Character> operators;
 	
 	public Tokenizer(String expression, Set<Character> operators) {
 		this.expr = expression.trim();

@@ -1,6 +1,7 @@
-package org.masking.finexpr.expr;
+package org.masking.finexpr.expr.operator;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 public abstract class Operator {
 
@@ -10,13 +11,13 @@ public abstract class Operator {
 	private final int precedence;
 
 	public Operator(String symbol, int operandNum, boolean leftAssociative, int precedence) {
-		this.symbol=symbol;
-		this.operandNum=operandNum;
-		this.leftAssociative=leftAssociative;
-		this.precedence=precedence;
+		this.symbol = symbol;
+		this.operandNum = operandNum;
+		this.leftAssociative = leftAssociative;
+		this.precedence = precedence;
 	};
 
-	public abstract BigDecimal apply(BigDecimal... args);
+	public abstract BigDecimal apply(MathContext mc, BigDecimal... args);
 
 	public String getSymbol() {
 		return symbol;
@@ -33,5 +34,4 @@ public abstract class Operator {
 	public int getPrecedence() {
 		return precedence;
 	}
-
 }
