@@ -1,16 +1,17 @@
 package org.masking.finexpr.expr;
 
 import java.util.Map;
-import java.util.HashMap;
 
-import org.masking.finexpr.expr.operator.DivideOperator;
-import org.masking.finexpr.expr.operator.MinusOperator;
-import org.masking.finexpr.expr.operator.MultiplyOperator;
-import org.masking.finexpr.expr.operator.Operator;
-import org.masking.finexpr.expr.operator.PlusOperator;
-import org.masking.finexpr.expr.operator.PowOperator;
-import org.masking.finexpr.expr.operator.UnaryMinuxOperator;
-import org.masking.finexpr.expr.operator.UnaryPlusOperator;
+import org.masking.finexpr.operator.DivideOperator;
+import org.masking.finexpr.operator.MinusOperator;
+import org.masking.finexpr.operator.MultiplyOperator;
+import org.masking.finexpr.operator.Operator;
+import org.masking.finexpr.operator.PlusOperator;
+import org.masking.finexpr.operator.PowOperator;
+import org.masking.finexpr.operator.UnaryMinuxOperator;
+import org.masking.finexpr.operator.UnaryPlusOperator;
+
+import java.util.HashMap;
 
 public class Expression {
 	

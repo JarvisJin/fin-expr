@@ -1,4 +1,4 @@
-package org.masking.finexpr.expr.operator;
+package org.masking.finexpr.operator;
 
 public class OperatorPrecedenceCode {
 
