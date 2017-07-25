@@ -22,9 +22,9 @@ public class Tokenizer {
 	private final char CLOSE_PAREN = ')';
 	private final char UNARY_SUFFIX = 'u'; // unary operator suffix : '-' => '-u';  '+' => '+u'
 	
-	private final Set<Character> operators;
+	private final Set<String> operators;
 	
-	public Tokenizer(String expression, Set<Character> operators) {
+	public Tokenizer(String expression, Set<String> operators) {
 		this.expr = expression.trim();
 		this.operators = operators;
 	}
@@ -77,7 +77,7 @@ public class Tokenizer {
 			token.setType(TokenType.CLOSE_PAREN);
 			++pos;
 			
-		}else if(operators!=null && operators.contains(ch)){
+		}else if(operators!=null && operators.contains(String.valueOf(ch))){
 			token.append(ch);
 			token.setType(TokenType.OPERATOR);
 			if('-'==ch || '+'==ch){
