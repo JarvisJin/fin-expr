@@ -4,8 +4,8 @@
 FinExpr is an expression evaluator  implemented by Java. Focus on precision, can be used in financial system.
 
 FinExpr是一个Java语言实现的表达式求值工具包。名称Fin是finance的缩写，注重于精度，适用于金融、计费、财务相关对金额精度敏感的系统。在计算时为了避免double类型的数据误差，默认均采用BigDecimal进行计算。
-
-
+  
+  
 ## Usage
 
 Expression: org.masking.finexpr.expr.Expression
@@ -16,7 +16,7 @@ Simple Example: 简单示例
 Expression e = new Expression("345000*0.0157");
 BigDecimal result = e.calculate(); // result 5416.5000
 ```
-
+  
 Custom Function & Add variables: 使用自定义函数 fx()、使用变量 x
 
 ```Java
@@ -30,14 +30,14 @@ e.addFunction(new Function("fx", 3){
 e.addVariable("x", new BigDecimal("8.5"));	
 BigDecimal result = e.calculate();		// result: 7.8
 ```
-
+  
 Custom Precision & RoundingMode: 自定义精度和舍入模式
 
 ```Java
 Expression e = new Expression("0.07*2.59", new MathContext(25,RoundingMode.HALF_UP));
 ```
-
-
+  
+  
 ## Default Supported Operators
 
 | Operator        | Description           | 
@@ -47,10 +47,11 @@ Expression e = new Expression("0.07*2.59", new MathContext(25,RoundingMode.HALF_
 | *    | Multiplication operator    |    
 | /    | Division operator       |    
 | ^    | Power operator          |    
-
-you can alse add custom operators by addOperator(); 
+  
+you can add custom operators by addOperator(); 
 Tips: currently the symbol of operator can only be one character.
-
+  
+  
 ## Background
 
 我在公司(一家互联网金融公司)做资产平台计费模块时，有这样的需求，贷款Loan是由公司合作的商户(贷款公司)进件过来的，对于一笔贷款Loan，在Loan的生命周期的各个阶段都需要收取一定的手续费/服务费/保证金等费用。比如审核通过时向商户收取保证金，放款成功时收取服务费。 而合作的商户很多，不同的商户每项费用的计算公式都不一样。即使是同一个商户，对于不同期数不同资产类目的贷款，收费公式也不尽相同。 所以我们就需要一个让业务人员可以自由编辑计费表达式，比如保证金计算公式 pv\*0.0157 （pv是贷款本金，0.0157是保证金比例），比如每期服务费公式0.01\*PMT(rate, n, pv, 0, false) （PMT是金融相关的函数，excel也内置了）。一开始公司代码库里有个用Spring EL实现的表达式计算公共Jar包。所以这个表达式计算需求就使用这个现成的Jar包实现了。
