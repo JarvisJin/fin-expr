@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import org.masking.finexpr.expr.ExprException;
 import org.masking.finexpr.operator.Operator;
 
 /**
@@ -19,30 +20,39 @@ public class ShuntingYard {
 
 	public static List<Token> getRPN(String expression, Map<String, Operator> opMap) {
 
-		List<Token> rpn = new LinkedList<Token>();
+		List<Token> output = new LinkedList<Token>();
 		Tokenizer tokenizer = new Tokenizer(expression, opMap.keySet());
 		Stack<Token> opStack = new Stack<Token>();
+		
+		Token lastToken = null;
 		
 		while (tokenizer.hasNext()) {
 			Token t = tokenizer.next();
 			switch (t.getType()) {
 			
 				case NUMBER:
-					
 				case VARIABLE:
-					rpn.add(t);
+					if(lastToken!=null && 
+						( lastToken.getType()==TokenType.NUMBER || lastToken.getType()==TokenType.VARIABLE)
+					){
+						throw new ExprException("Parse error! missing operator or separator ',' at "+(t.getPos()+1));
+					}
+					output.add(t);
 					break;
 					
 				case OPERATOR:
-					Operator tOp = opMap.get(t.getContent());
+					Operator thisOp = opMap.get(t.getContent());
+					
 					while(!opStack.isEmpty()){
-						Token ot = opStack.peek();
-						if(ot.getType()==TokenType.OPERATOR){
-							Operator otOp = opMap.get(ot.getContent());
-							if(otOp.getPrecedence() > tOp.getPrecedence() 
-									|| otOp.getPrecedence() == tOp.getPrecedence()){
+						Token peekToken = opStack.peek();
+						if(peekToken.getType()==TokenType.OPERATOR){
+							Operator lastOp = opMap.get(peekToken.getContent());
+							if(lastOp.getPrecedence() > thisOp.getPrecedence()){
 								opStack.pop();
-								rpn.add(ot);
+								output.add(peekToken);
+							}else if(lastOp.getPrecedence() == thisOp.getPrecedence() && lastOp.isLeftAssociative()){
+								opStack.pop();
+								output.add(peekToken);
 							}else{
 								break;
 							}
@@ -54,19 +64,48 @@ public class ShuntingYard {
 					break;
 				
 				case FUNCTION:
-				
+					opStack.push(t);
+					break;
 				case OPEN_PAREN:
 					opStack.push(t);
+					if(lastToken!=null && lastToken.getType()==TokenType.FUNCTION){
+						output.add(t); // to determine the number of parameters of the functions with variable params
+					}
 					break;
 					
 				case SEPARATOR:
+					while(!opStack.isEmpty() && opStack.peek().getType()!=TokenType.OPEN_PAREN){
+						output.add(opStack.pop());
+					}
+					if(opStack.isEmpty()){
+						throw new ExprException("Parse error! for ',' at "+(t.getPos()+1));
+					}
 					break;
 					
 				case CLOSE_PAREN:
+					while(!opStack.isEmpty() && opStack.peek().getType()!=TokenType.OPEN_PAREN){
+						output.add(opStack.pop());
+					}
+					if(opStack.isEmpty()){
+						throw new ExprException("Parse error! PAREN not match! at "+(t.getPos()+1));
+					}
+					opStack.pop();
+					if(!opStack.isEmpty() && opStack.peek().getType()==TokenType.FUNCTION){
+						output.add(opStack.pop());
+					}
 					break;
 			}
+			
+			lastToken = t;
 		}
-
-		return rpn;
+		
+		while(!opStack.isEmpty()){
+			Token leftT = opStack.pop();
+			if(leftT.getType()==TokenType.OPEN_PAREN || leftT.getType()==TokenType.CLOSE_PAREN){
+				throw new ExprException("Parse error! PAREN not match! at "+(leftT.getPos()+1));
+			}
+			output.add(leftT);
+		}
+		return output;
 	}
 }

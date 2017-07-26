@@ -91,7 +91,7 @@ public class Tokenizer {
 			++pos;
 			
 		}else{
-			throw new ExprException("Invalid char in expression, position: "+pos);
+			throw new ExprException("Invalid char in expression, position: "+(pos+1));
 		}
 		
 		return previousToken = token;
