@@ -8,25 +8,26 @@ FinExpr是一个Java语言实现的表达式求值工具包。名称Fin是financ
 
 ### Usage
 
-	Simple Example:
+Simple Example:
 
-	```Java
-	Expression e = new Expression("345000*0.0157");
-	BigDecimal result = e.calculate(); // result 5416.5000
-	```
+```Java
+Expression e = new Expression("345000*0.0157");
+BigDecimal result = e.calculate(); // result 5416.5000
+```
 
-	Custom Function:
-	```Java
-	Expression e = new Expression("fx(9, 7.3, x)");
-	e.addFunction(new Function("fx", 3){
-		@Override
-		public BigDecimal apply(MathContext mc, List<BigDecimal> args) {
-			return args.get(0).add(args.get(1),mc).subtract(args.get(2),mc);
-		}
-	});
-	e.addVariable("x", new BigDecimal("8.5"));	
-	BigDecimal result =(e.calculate());		// result: 7.8
-	```
+Custom Function:
+
+```Java
+Expression e = new Expression("fx(9, 7.3, x)");
+e.addFunction(new Function("fx", 3){
+	@Override
+	public BigDecimal apply(MathContext mc, List<BigDecimal> args) {
+		return args.get(0).add(args.get(1),mc).subtract(args.get(2),mc);
+	}
+});
+e.addVariable("x", new BigDecimal("8.5"));	
+BigDecimal result =(e.calculate());		// result: 7.8
+```
 
 ### Background
 
