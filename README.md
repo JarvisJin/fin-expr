@@ -69,6 +69,5 @@ Tips: currently the symbol of operator can only be one character.
 后来发现一款优秀的表达式计算工具 **[EvalEx](https://github.com/uklimaschewski/EvalEx)** 这个工具计算全程采用BigDecimal, 对于表达式里的字面量比如 35.6\*12.3 会自动识别构造成BigDecimal去计算。对于用户自定义的变量参数比如 3\*var ， var可以需要传入一个BigDecimal变量。而且可以很方便的自定义函数，从而实现了和在Excel里计算表达式一样的简捷功能， 比如通过自定义加入pmt公式， 可以直接计算表达式"pmt(rate, n, pv)"。
 
 但是EvalEx也有些许小小的缺陷，比如为了追求“handy”，EvalEx所有类都作为内部类放在一个Java文件里。自定义函数时 Function类不是静态类，每次不同的公式都需要重写new Function， 而作者为了兼容已有系统 不打算接受更改。对一元操作符支持有问题（最新版已修改）等等。于是重新造了一个轮子 FinExpr。
-
-
-
+  
+My Blog: http://imasking.me
