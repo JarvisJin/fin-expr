@@ -28,7 +28,7 @@ e.addFunction(new Function("fx", 3){
 	}
 });
 e.addVariable("x", new BigDecimal("8.5"));	
-BigDecimal result =(e.calculate());		// result: 7.8
+BigDecimal result = e.calculate();		// result: 7.8
 ```
 
 Custom Precision & RoundingMode: 自定义精度和舍入模式
