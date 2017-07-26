@@ -8,6 +8,7 @@ FinExpr是一个Java语言实现的表达式求值工具包。名称Fin是financ
 
 ## Usage
 
+
 Simple Example: 简单示例
 
 ```Java
@@ -15,7 +16,7 @@ Expression e = new Expression("345000*0.0157");
 BigDecimal result = e.calculate(); // result 5416.5000
 ```
 
-Custom Function & Add variables: 使用自定义函数、使用变量
+Custom Function & Add variables: 使用自定义函数 fx()、使用变量 x
 
 ```Java
 Expression e = new Expression("fx(9, 7.3, x)");
