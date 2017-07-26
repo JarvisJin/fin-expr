@@ -36,13 +36,14 @@ public class ExpressionTest extends TestCase {
 	 * Test :-)
 	 */
 	public void testExpr() {
-		Expression e = new Expression("fx(6,7.3,8)");
+		Expression e = new Expression("fx(9, 7.3, x)");
 		e.addFunction(new Function("fx", 3){
 			@Override
 			public BigDecimal apply(MathContext mc, List<BigDecimal> args) {
 				return args.get(0).add(args.get(1),mc).subtract(args.get(2),mc);
 			}
 		});
+		e.addVariable("x", new BigDecimal("8.5"));
 		System.out.println(e.calculate());
 		assertTrue(true);
 	}
