@@ -1,6 +1,11 @@
 package org.masking.finexpr;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.util.List;
+
 import org.masking.finexpr.expr.Expression;
+import org.masking.finexpr.function.Function;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -28,11 +33,17 @@ public class ExpressionTest extends TestCase {
 	}
 
 	/**
-	 * Rigourous Test :-)
+	 * Test :-)
 	 */
 	public void testExpr() {
-		Expression e = new Expression("9*&9-9)");
-		System.out.println(e.toRPN());
+		Expression e = new Expression("fx(6,7.3,8)");
+		e.addFunction(new Function("fx", 3){
+			@Override
+			public BigDecimal apply(MathContext mc, List<BigDecimal> args) {
+				return args.get(0).add(args.get(1),mc).subtract(args.get(2),mc);
+			}
+		});
+		System.out.println(e.calculate());
 		assertTrue(true);
 	}
 }

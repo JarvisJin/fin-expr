@@ -2,6 +2,7 @@ package org.masking.finexpr.operator;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.List;
 
 public abstract class Operator {
 
@@ -17,7 +18,7 @@ public abstract class Operator {
 		this.precedence = precedence;
 	};
 
-	public abstract BigDecimal apply(MathContext mc, BigDecimal... args);
+	public abstract BigDecimal apply(MathContext mc, List<BigDecimal> args);
 
 	public String getSymbol() {
 		return symbol;

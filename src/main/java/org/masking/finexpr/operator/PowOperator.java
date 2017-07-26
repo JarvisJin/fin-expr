@@ -3,6 +3,7 @@ package org.masking.finexpr.operator;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.List;
 
 import org.masking.finexpr.expr.ExprException;
 
@@ -17,7 +18,7 @@ public class PowOperator extends Operator {
 	}
 
 	@Override
-	public BigDecimal apply(MathContext mc, BigDecimal... args) {
+	public BigDecimal apply(MathContext mc, List<BigDecimal> args) {
 		if (mc == null)
 			throw new ExprException("the MathContext cannot be null!");
 
@@ -26,18 +27,21 @@ public class PowOperator extends Operator {
 		 * https://github.com/uklimaschewski/EvalEx/blob/master/src/com/udojava/
 		 * evalex/Expression.java
 		 */
-		int signOf2 = args[1].signum();
-		double dn1 = args[0].doubleValue();
-		args[1] = args[1].multiply(new BigDecimal(signOf2)); // n2 is now
-																// positive
-		BigDecimal remainderOf2 = args[1].remainder(BigDecimal.ONE);
-		BigDecimal n2IntPart = args[1].subtract(remainderOf2);
-		BigDecimal intPow = args[0].pow(n2IntPart.intValueExact(), mc);
-		BigDecimal doublePow = new BigDecimal(Math.pow(dn1, remainderOf2.doubleValue()));
+		BigDecimal v1 = args.get(0), v2 = args.get(1);
+		
+		int signOf2 = v2.signum();
+		double dn1 = v1.doubleValue();
+		v2 = v2.multiply(new BigDecimal(signOf2)); // n2 is now positive
+		BigDecimal remainderOf2 = v2.remainder(BigDecimal.ONE);
+		BigDecimal n2IntPart = v2.subtract(remainderOf2);
+		BigDecimal intPow = v1.pow(n2IntPart.intValueExact(), mc);
+		BigDecimal doublePow = new BigDecimal(Math.pow(dn1,
+				remainderOf2.doubleValue()));
 
 		BigDecimal result = intPow.multiply(doublePow, mc);
 		if (signOf2 == -1) {
-			result = BigDecimal.ONE.divide(result, mc.getPrecision(), RoundingMode.HALF_UP);
+			result = BigDecimal.ONE.divide(result, mc.getPrecision(),
+					RoundingMode.HALF_UP);
 		}
 		return result;
 	}

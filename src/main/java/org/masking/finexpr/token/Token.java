@@ -12,6 +12,11 @@ public class Token {
 		content = new StringBuilder(6);
 	}
 	
+	public Token(TokenType type){
+		this.type = type; 
+		content = new StringBuilder(6);
+	}
+	
 	public String getContent() {
 		return content.toString();
 	}
