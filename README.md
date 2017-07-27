@@ -20,7 +20,7 @@ BigDecimal result = e.calculate(); // result 5416.5000
 Custom Function & Add variables: 使用自定义函数 fx()、使用变量 x
 
 ```Java
-Expression e = new Expression("fx(9, 7.3, x)");
+Expression e = new Expression("fx(9, 7.3, x)+2^3");
 e.addFunction(new Function("fx", 3){
 	@Override
 	public BigDecimal apply(MathContext mc, List<BigDecimal> args) {
@@ -28,7 +28,7 @@ e.addFunction(new Function("fx", 3){
 	}
 });
 e.addVariable("x", new BigDecimal("8.5"));	
-BigDecimal result = e.calculate();		// result: 7.8
+BigDecimal result = e.calculate();		// result: 15.8
 ```
   
 Custom Precision & RoundingMode: 自定义精度和舍入模式
