@@ -2,6 +2,7 @@ package org.masking.finexpr.operator;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.List;
 
 import org.masking.finexpr.expr.ExprException;
 
@@ -16,10 +17,10 @@ public class DivideOperator extends Operator {
 	}
 
 	@Override
-	public BigDecimal apply(MathContext mc, BigDecimal... args) {
+	public BigDecimal apply(MathContext mc, List<BigDecimal> args) {
 		if (mc == null)
 			throw new ExprException("the MathContext cannot be null!");
-		return args[0].divide(args[1], mc);
+		return args.get(0).divide(args.get(1), mc);
 	}
 
 	public static DivideOperator getInstance() {
