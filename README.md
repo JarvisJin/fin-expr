@@ -53,14 +53,16 @@ e.addFunction(new Function("pmt", 3){
 BigDecimal result = e.calculate();	// result: 计算借款10000元 12期还 年化利率10%，等额本息每期还款金额
 
 // 比如有计费公式是向贷款商户收取每期还款金额的 0.2%作为服务费, 则表达式Expression改成 0.002*pmt(利率, 期数, 本金) 即可
-// 当然也有其他各种复杂的收费计算表达式，比如-pv(0.115/12,nper,pmt(0.115/12,nper,-pv)-pmt(0.09/12,nper,-pv))
-// 其中pv=本金 nper=期数 pv() 则是本金函数
+Expression e = new Expression("0.002*pmt(0.1, 12, 10000)");
 
-/**
- 因此，FinExpr特别适用于费用计算、合作商佣金计算等等涉及不同合作方有较高计费规则差异化定制的需求场景
- */
+// 当然也有其他各种复杂的收费计算表达式，比如 -pv(0.115/12,nper,pmt(0.115/12,nper,-pv)-pmt(0.09/12,nper,-pv))
+Expression e = new Expression("-pv(0.115/12,nper,pmt(0.115/12,nper,-pv)-pmt(0.09/12,nper,-pv))");
+// 其中pv=本金 nper=期数是自定义的变量；  pv() pmt() 则是自定义的本金函数和年金函数；如何自定义变量和函数见 Usage。
+
 ```
-
+因此，FinExpr特别适用于费用计算、合作商佣金计算等等涉及不同合作方有较高计费规则差异化定制的需求场景
+ 
+  
 ## Default Supported Operators
 
 | Operator        | Description           | 
