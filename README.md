@@ -37,7 +37,10 @@ Custom Precision & RoundingMode: 自定义精度和舍入模式
 Expression e = new Expression("0.07*2.59", new MathContext(25,RoundingMode.HALF_UP));
 ```
 
-## 实际应用场景：例如自定义pmt函数：pmt函数是计算等额本息还款，每期还款金额的公式。
+## 实际应用场景：
+
+例如自定义pmt函数：pmt函数是计算等额本息还款，每期还款金额的公式。
+
 ```Java
 Expression e = new Expression("pmt(0.1, 12, 10000)");
 
