@@ -12,7 +12,7 @@ import org.masking.finexpr.operator.Operator;
  * Shunting-yard algorithm https://en.wikipedia.org/wiki/Shunting-yard_algorithm
  * https://zh.wikipedia.org/wiki/%E8%B0%83%E5%BA%A6%E5%9C%BA%E7%AE%97%E6%B3%95
  * 
- * @author xuanlu
+ * @author Jin
  *
  */
 public class ShuntingYard {
