@@ -90,7 +90,8 @@ Tips: currently the symbol of operator can only be one character.
 然而调研了十几个主流的表达式求值工具，均不能完全满足需求。
 比如 Ognl、MVE、JSEL 这些类脚本语言，以及 exp4j、expr4j、Aviator等等。
 这些工具使用BigDecimal的话需要在表达式里对每个数值手动标识,不能兼容系统已有的几百个表达式。
-并且对于自定义函数支持也不方便，需要在表达式里写成JavaClass.method()或javaObject.method(), 这需要对系统里历史的所有公式按新框架要求修改， 而且对于配公式的业务人员来说这样的方式也比较怪异，他们习惯的是和Excel里一样的表达式。
+并且对于自定义函数支持也不方便，需要在表达式里写成JavaClass.method()或javaObject.method(), 这需要对系统里历史的所有公式按新框架要求修改， 而且对于配公式的业务人员来说这样的方式也比较怪异，他们习惯的是和Excel里一样的表达式。  
+
 后来发现一款优秀的表达式计算工具 **[EvalEx](https://github.com/uklimaschewski/EvalEx)** 这个工具计算全程采用BigDecimal, 对于表达式里的字面量比如 35.6\*12.3 会自动识别构造成BigDecimal去计算。对于用户自定义的变量参数比如 3\*var ， var可以需要传入一个BigDecimal变量。而且可以很方便的自定义函数，从而实现了和在Excel里计算表达式一样的简捷功能， 比如通过自定义加入pmt公式， 可以直接计算表达式"pmt(rate, n, pv)"。
 
 但是EvalEx也有些许小小的缺陷，比如为了追求“handy”，EvalEx所有类都作为内部类放在一个Java文件里。自定义函数时 Function类不是静态类，每次不同的公式都需要重写new Function， 而作者为了兼容已有系统 不打算接受更改。对一元操作符支持有问题（最新版已修改）等等。于是重新造了一个轮子 FinExpr。
