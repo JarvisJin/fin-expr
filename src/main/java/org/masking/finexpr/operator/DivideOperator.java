@@ -17,7 +17,7 @@ public class DivideOperator extends Operator {
 	}
 
 	@Override
-	public BigDecimal apply(MathContext mc, List<BigDecimal> args) {
+	public BigDecimal apply(List<BigDecimal> args, MathContext mc) {
 		if (mc == null)
 			throw new ExprException("the MathContext cannot be null!");
 		return args.get(0).divide(args.get(1), mc);

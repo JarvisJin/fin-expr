@@ -72,7 +72,7 @@ public class Expression {
 								throw new ExprException(
 										"Error, the number of params for function " + t.getContent() + " is incorrect.");
 							}
-							numStack.push(new NumberToken(func.apply(mc, reverse(params))));
+							numStack.push(new NumberToken(func.apply(reverse(params), mc)));
 						} else {
 							throw new ExprException("Error, function " + t.getContent() + " without (.");
 						}
@@ -91,7 +91,7 @@ public class Expression {
 						if (op.getOperandNum() != params.size()) {
 							throw new ExprException("Error, operator " + t.getContent() + " donot have enough operands!");
 						}
-						numStack.push(new NumberToken(op.apply(mc, reverse(params))));
+						numStack.push(new NumberToken(op.apply(reverse(params), mc)));
 	
 					} else {
 						throw new ExprException("Unkown operator '" + t.getContent() + "' at " + (t.getPos() + 1));

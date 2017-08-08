@@ -18,7 +18,7 @@ public class PowOperator extends Operator {
 	}
 
 	@Override
-	public BigDecimal apply(MathContext mc, List<BigDecimal> args) {
+	public BigDecimal apply(List<BigDecimal> args, MathContext mc) {
 		if (mc == null)
 			throw new ExprException("the MathContext cannot be null!");
 

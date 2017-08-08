@@ -19,7 +19,7 @@ public abstract class Function {
 		this.argNum = argNum;
 	}
 	
-	public abstract BigDecimal apply(MathContext mc, List<BigDecimal> args);
+	public abstract BigDecimal apply(List<BigDecimal> args, MathContext mc);
 
 	public String getName() {
 		return name;

@@ -22,11 +22,11 @@ Custom Function & Add variables: 使用自定义函数 fx()、使用变量 x
 Expression e = new Expression("fx(9, 7.3, x)+2^3");
 e.addFunction(new Function("fx", 3){
 	@Override
-	public BigDecimal apply(MathContext mc, List<BigDecimal> args) {
+	public BigDecimal apply(List<BigDecimal> args, MathContext mc) {
 		return args.get(0).add(args.get(1),mc).subtract(args.get(2),mc);
 	}
 });
-e.addVariable("x", new BigDecimal("8.5"));	
+e.addVariable("x", new BigDecimal("8.5"));
 BigDecimal result = e.calculate();		// result: 15.8
 ```
   
@@ -45,7 +45,7 @@ Expression e = new Expression("pmt(0.1, 12, 10000)");
 
 e.addFunction(new Function("pmt", 3){
 	@Override
-	public BigDecimal apply(MathContext mc, List<BigDecimal> args) {
+	public BigDecimal apply(List<BigDecimal> args, MathContext mc) {
 	  //TODO impl of pmt();
 	}
 });

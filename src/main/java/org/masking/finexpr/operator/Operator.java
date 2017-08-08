@@ -18,7 +18,7 @@ public abstract class Operator {
 		this.precedence = precedence;
 	};
 
-	public abstract BigDecimal apply(MathContext mc, List<BigDecimal> args);
+	public abstract BigDecimal apply(List<BigDecimal> args, MathContext mc);
 
 	public String getSymbol() {
 		return symbol;
