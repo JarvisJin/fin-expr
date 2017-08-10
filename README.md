@@ -46,7 +46,8 @@ Expression e = new Expression("pmt(0.1, 12, 10000)");
 e.addFunction(new Function("pmt", 3){
 	@Override
 	public BigDecimal apply(List<BigDecimal> args, MathContext mc) {
-	  //TODO impl of pmt();
+	  // implement of pmt();
+	  // https://support.office.com/en-us/article/PMT-function-0214da64-9a63-4996-bc20-214433fa6441
 	}
 });
 BigDecimal result = e.calculate();	// result: 计算借款10000元 12期还 年化利率10%，等额本息每期还款金额
