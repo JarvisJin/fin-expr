@@ -60,7 +60,7 @@ public class Tokenizer {
 				token.append(ch);
 				ch = ++pos < expr.length() ? expr.charAt(pos) : 0;
 			} while (isCotinueVarOrFuncName(ch));
-			token.setType(ch=='(' ? TokenType.FUNCTION : TokenType.VARIABLE);
+			token.setType(ch==OPEN_PAREN ? TokenType.FUNCTION : TokenType.VARIABLE);
 			
 		}else if(SEPARATOR == ch){
 			token.append(ch);
