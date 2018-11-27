@@ -36,15 +36,33 @@ public class ExpressionTest extends TestCase {
 	 * Test :-)
 	 */
 	public void testExpr() {
-		Expression e = new Expression("fx(9, 7.3, x)+2^3");
-		e.addFunction(new Function("fx", 3){
+		Expression e = new Expression("add(x,y) + a^b");
+		
+		// define function "add"
+		e.addFunction(new Function("add", 2){
 			@Override
 			public BigDecimal apply(List<BigDecimal> args, MathContext mc) {
-				return args.get(0).add(args.get(1),mc).subtract(args.get(2),mc);
+				return args.get(0).add(args.get(1),mc);
 			}
 		});
+		
+		/*
+		 *  set variables, 
+		 *  in this case:
+		 *  the expression 
+		 *  = add(8.5,5.77) + 5^3 
+		 *  = 8.5+5.77 + 5^3 
+		 *  = 14.27 + 125 
+		 *  = 139.27
+		 */
 		e.addVariable("x", new BigDecimal("8.5"));	
-		System.out.println(e.calculate());
-		assertTrue(true);
+		e.addVariable("y", new BigDecimal("5.77"));	
+		e.addVariable("a", new BigDecimal("5"));	
+		e.addVariable("b", new BigDecimal("3"));	
+		
+		BigDecimal result = e.calculate();
+		System.out.println(result);
+		
+		assertTrue(result.equals(new BigDecimal("139.27")));
 	}
 }
