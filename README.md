@@ -3,9 +3,23 @@
 ## Brief introduction
 FinExpr is an expression evaluator  implemented by Java. Focus on precision, can be used in financial system.
 
-FinExpr是一个Java语言实现的表达式求值工具包。名称Fin是finance的缩写，注重于精度，适用于金融、计费、财务相关对金额精度敏感的系统。在计算时为了避免double类型的数据误差，默认均采用BigDecimal进行计算。 这是一个Maven项目，下载源码后用在IDE选择导入Maven项目即可。
-  
+FinExpr是一个Java语言实现的表达式求值工具包。名称Fin是finance的缩写，注重于精度，适用于金融、计费、财务相关对金额精度敏感的系统。在计算时为了避免double类型的数据误差，默认均采用BigDecimal进行计算。 
+要使用FinExpr，如果你使用Maven或者Gradle构建你的项目，只要按下面的方式在你的项目里引入依赖即可。 如果要查看项目，下载源码后，在IDE里按Maven工程导入即可。
+
 ## Usage
+
+#### Maven: add in pom.xml
+<dependency>
+  <groupId>io.github.jarvisjin</groupId>
+  <artifactId>fin-expr</artifactId>
+  <version>1.0.0</version>
+</dependency>
+
+#### Gradle:  add in build.gradle
+dependencies {
+    ...
+    compile 'io.github.jarvisjin:fin-expr:1.0.0'
+}
 
 Expression: io.github.jarvisjin.finexpr.expr.Expression
 
