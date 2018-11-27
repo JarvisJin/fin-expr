@@ -1,4 +1,4 @@
-package org.masking.finexpr.token;
+package io.github.jarvisjin.finexpr.token;
 
 public class Token {
 

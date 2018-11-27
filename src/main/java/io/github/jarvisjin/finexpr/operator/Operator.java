@@ -1,4 +1,4 @@
-package org.masking.finexpr.operator;
+package io.github.jarvisjin.finexpr.operator;
 
 import java.math.BigDecimal;
 import java.math.MathContext;

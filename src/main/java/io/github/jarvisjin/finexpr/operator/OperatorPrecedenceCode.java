@@ -1,4 +1,4 @@
-package org.masking.finexpr.operator;
+package io.github.jarvisjin.finexpr.operator;
 
 public class OperatorPrecedenceCode {
 

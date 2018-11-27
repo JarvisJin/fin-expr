@@ -1,12 +1,11 @@
-package org.masking.finexpr;
+package io.github.jarvisjin.finexpr;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.List;
 
-import org.masking.finexpr.expr.Expression;
-import org.masking.finexpr.function.Function;
-
+import io.github.jarvisjin.finexpr.expr.Expression;
+import io.github.jarvisjin.finexpr.function.Function;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

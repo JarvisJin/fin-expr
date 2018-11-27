@@ -1,8 +1,8 @@
-package org.masking.finexpr.token;
+package io.github.jarvisjin.finexpr.token;
 
 import java.math.BigDecimal;
 
-import org.masking.finexpr.expr.ExprException;
+import io.github.jarvisjin.finexpr.expr.ExprException;
 
 public class NumberToken extends Token{
 	

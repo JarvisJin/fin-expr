@@ -1,12 +1,12 @@
-package org.masking.finexpr.token;
+package io.github.jarvisjin.finexpr.token;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.masking.finexpr.expr.ExprException;
-import org.masking.finexpr.operator.Operator;
+import io.github.jarvisjin.finexpr.expr.ExprException;
+import io.github.jarvisjin.finexpr.operator.Operator;
 
 /**
  * Shunting-yard algorithm https://en.wikipedia.org/wiki/Shunting-yard_algorithm

@@ -1,11 +1,11 @@
-package org.masking.finexpr.operator;
+package io.github.jarvisjin.finexpr.operator;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.List;
 
-import org.masking.finexpr.expr.ExprException;
+import io.github.jarvisjin.finexpr.expr.ExprException;
 
 public class PowOperator extends Operator {
 

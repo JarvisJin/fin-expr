@@ -1,4 +1,4 @@
-package org.masking.finexpr.expr;
+package io.github.jarvisjin.finexpr.expr;
 
 public class ExprException extends RuntimeException {
 

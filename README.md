@@ -7,7 +7,7 @@ FinExpr是一个Java语言实现的表达式求值工具包。名称Fin是financ
   
 ## Usage
 
-Expression: org.masking.finexpr.expr.Expression
+Expression: io.github.jarvisjin.finexpr.expr.Expression
 
 Simple Example: 简单示例
 
