@@ -16,18 +16,36 @@ Expression e = new Expression("345000*0.0157");
 BigDecimal result = e.calculate(); // result 5416.5000
 ```
   
-Custom Function & Add variables: 使用自定义函数 fx()、使用变量 x
+Custom Function & Add variables: 使用自定义函数 add()、使用4个变量 x, y, a, b
 
 ```Java
-Expression e = new Expression("fx(9, 7.3, x)+2^3");
-e.addFunction(new Function("fx", 3){
-	@Override
-	public BigDecimal apply(List<BigDecimal> args, MathContext mc) {
-		return args.get(0).add(args.get(1),mc).subtract(args.get(2),mc);
-	}
-});
-e.addVariable("x", new BigDecimal("8.5"));
-BigDecimal result = e.calculate();		// result: 15.8
+	Expression e = new Expression("add(x,y) + a^b");
+		
+	// define function "add" 自定义函数 add
+	e.addFunction(new Function("add", 2){
+		@Override
+		public BigDecimal apply(List<BigDecimal> args, MathContext mc) {
+			return args.get(0).add(args.get(1),mc);
+		}
+	});
+	
+	// set variables,  设置变量的值
+	e.addVariable("x", new BigDecimal("8.5"));	
+	e.addVariable("y", new BigDecimal("5.77"));	
+	e.addVariable("a", new BigDecimal("5"));	
+	e.addVariable("b", new BigDecimal("3"));	
+	/*
+	 *  in this case:
+	 *  the expression 
+	 *  = add(8.5,5.77) + 5^3 
+	 *  = 8.5+5.77 + 5^3 
+	 *  = 14.27 + 125 
+	 *  = 139.27
+	*/
+	BigDecimal result = e.calculate();
+	System.out.println(result);
+	
+	assertTrue(result.equals(new BigDecimal("139.27")));
 ```
   
 Custom Precision & RoundingMode: 自定义精度和舍入模式
