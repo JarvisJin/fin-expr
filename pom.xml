@@ -13,7 +13,13 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-
+	
+	<scm>
+		<url>https://github.com/JarvisJin/FinExpr</url>
+		<connection>https://github.com/JarvisJin/FinExpr.git</connection>
+		<developerConnection>https://github.com/JarvisJin</developerConnection>
+	</scm>
+	
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
