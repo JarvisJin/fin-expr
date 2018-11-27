@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.github.jarvisjin</groupId>
-	<artifactId>finexpr</artifactId>
+	<artifactId>fin-expr</artifactId>
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
-	<name>finexpr</name>
+	<name>fin-expr</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
