@@ -9,17 +9,21 @@ FinExpr是一个Java语言实现的表达式求值工具包。名称Fin是financ
 ## Usage
 
 #### Maven: add in pom.xml
+```xml
 <dependency>
   <groupId>io.github.jarvisjin</groupId>
   <artifactId>fin-expr</artifactId>
   <version>1.0.0</version>
 </dependency>
+```
 
 #### Gradle:  add in build.gradle
+```json
 dependencies {
     ...
     compile 'io.github.jarvisjin:fin-expr:1.0.0'
 }
+```
 
 Expression: io.github.jarvisjin.finexpr.expr.Expression
 
