@@ -1,3 +1,19 @@
+/*
+ * Copyright 2002-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.github.jarvisjin.finexpr.expr;
 
 import java.util.Map;
@@ -10,7 +26,7 @@ import io.github.jarvisjin.finexpr.operator.MultiplyOperator;
 import io.github.jarvisjin.finexpr.operator.Operator;
 import io.github.jarvisjin.finexpr.operator.PlusOperator;
 import io.github.jarvisjin.finexpr.operator.PowOperator;
-import io.github.jarvisjin.finexpr.operator.UnaryMinuxOperator;
+import io.github.jarvisjin.finexpr.operator.UnaryMinusOperator;
 import io.github.jarvisjin.finexpr.operator.UnaryPlusOperator;
 import io.github.jarvisjin.finexpr.token.NumberToken;
 import io.github.jarvisjin.finexpr.token.ShuntingYard;
@@ -23,6 +39,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * new the instance of Expression to calculate.
+ * @author JarvisJin
+ *
+ */
 public class Expression {
 
 	/** the origin infix expression */
@@ -162,16 +183,12 @@ public class Expression {
 		return rpn;
 	}
 
-	public String getExpr() {
-		return expr;
-	}
-
 	/**
-	 * add custom operator if replaceOnDuplicate=true, when there is already an
-	 * operator 'oldOp' with the same symbol, oldOp will be replaced.
+	 * add custom operator 
 	 * 
-	 * @param op
-	 * @param replaceOnDuplicate
+	 * @param op the {@code Operator} to be added
+	 * @param replaceOnDuplicate when {@code replaceOnDuplicate==true}, if there is already an
+	 * operator {@code oldOp} with the same symbol, {@code oldOp} will be replaced by {@code op}.
 	 */
 	public Expression addOperator(Operator op, boolean replaceOnDuplicate) {
 		assert op != null;
@@ -185,7 +202,14 @@ public class Expression {
 	public Expression addOperator(Operator op) {
 		return addOperator(op, false);
 	}
-
+	
+	/**
+	 * add custom function 
+	 * @param func the {@code Function} to be added
+	 * @param replaceOnDuplicate when {@code replaceOnDuplicate==true}, if there is already an
+	 * function {@code oldFunc} with the same symbol, {@code oldFunc} will be replaced by {@code func}.
+	 * @return
+	 */
 	public Expression addFunction(Function func, boolean replaceOnDuplicate) {
 		assert func != null;
 		if (funcMap.containsKey(func.getName()) && (!replaceOnDuplicate)) {
@@ -198,7 +222,10 @@ public class Expression {
 	public Expression addFunction(Function func) {
 		return addFunction(func, false);
 	}
-
+	
+	/**
+	 * add custom variable 
+	 */
 	public Expression addVariable(String name, BigDecimal value, boolean replaceOnDuplicate) {
 		assert name != null && value != null;
 		if (varMap.containsKey(name) && (!replaceOnDuplicate)) {
@@ -211,14 +238,26 @@ public class Expression {
 	public Expression addVariable(String name, BigDecimal value) {
 		return addVariable(name, value, false);
 	}
-
+	
+	/**
+     * Removes all of the variables added to the Expression
+     * The variables in the Expression will be empty after this call returns, and can be reset
+     *
+     */
+	public void clearVariables() {
+		varMap.clear();
+	}
+	
+	/**
+	 * init defaul operator +, -, *, /, ^, -(unary), +(unary)
+	 */
 	private void initDefaultOperator() {
 		opMap.put(PlusOperator.SYMBOL, PlusOperator.getInstance());
 		opMap.put(MinusOperator.SYMBOL, MinusOperator.getInstance());
 		opMap.put(MultiplyOperator.SYMBOL, MultiplyOperator.getInstance());
 		opMap.put(DivideOperator.SYMBOL, DivideOperator.getInstance());
 		opMap.put(PowOperator.SYMBOL, PowOperator.getInstance());
-		opMap.put(UnaryMinuxOperator.SYMBOL, UnaryMinuxOperator.getInstance());
+		opMap.put(UnaryMinusOperator.SYMBOL, UnaryMinusOperator.getInstance());
 		opMap.put(UnaryPlusOperator.SYMBOL, UnaryPlusOperator.getInstance());
 	}
 }

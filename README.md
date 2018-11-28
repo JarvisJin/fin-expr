@@ -43,8 +43,8 @@ Custom Function & Add variables: 使用自定义函数 add()、使用变量 x, y
 
 ```Java
 Expression e = new Expression("add(x,y) + a^b");
-	
-// define function "add" 自定义函数 add
+
+// define function "add"
 e.addFunction(new Function("add", 2){
 	@Override
 	public BigDecimal apply(List<BigDecimal> args, MathContext mc) {
@@ -52,23 +52,39 @@ e.addFunction(new Function("add", 2){
 	}
 });
 
-// set variables,  设置变量的值
-e.addVariable("x", new BigDecimal("8.5"));	
-e.addVariable("y", new BigDecimal("5.77"));	
-e.addVariable("a", new BigDecimal("5"));	
-e.addVariable("b", new BigDecimal("3"));	
 /*
+ *  set variables, 
  *  in this case:
  *  the expression 
  *  = add(8.5,5.77) + 5^3 
  *  = 8.5+5.77 + 5^3 
  *  = 14.27 + 125 
  *  = 139.27
-*/
+ */
+e.addVariable("x", new BigDecimal("8.5"));	
+e.addVariable("y", new BigDecimal("5.77"));	
+e.addVariable("a", new BigDecimal("5"));	
+e.addVariable("b", new BigDecimal("3"));	
+
 BigDecimal result = e.calculate();
 System.out.println(result);
-
 assertTrue(result.equals(new BigDecimal("139.27")));
+
+/*
+ * set replaceOnDuplicate==true, to replace the value of x and b, then caculate again.
+ * the expression
+ * = -9+5.77 + 5^5
+ * = -3.23 + 3125 
+ * = 3121.77
+ * 
+ * if you don't want to use replaceOnDuplicate, you can use Expression.clearVariables() instead.
+ * that function will clean all variables, and you need to reset all of the variables;
+ */
+e.addVariable("x", new BigDecimal("-9"), true);
+e.addVariable("b", new BigDecimal("5"), true);
+result = e.calculate();
+System.out.println(result);
+assertTrue(result.equals(new BigDecimal("3121.77")));
 ```
   
 Custom Precision & RoundingMode: 自定义精度和舍入模式

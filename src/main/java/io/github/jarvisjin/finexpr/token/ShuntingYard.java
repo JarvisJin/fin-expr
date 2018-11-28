@@ -12,7 +12,10 @@ import io.github.jarvisjin.finexpr.operator.Operator;
  * Shunting-yard algorithm https://en.wikipedia.org/wiki/Shunting-yard_algorithm
  * https://zh.wikipedia.org/wiki/%E8%B0%83%E5%BA%A6%E5%9C%BA%E7%AE%97%E6%B3%95
  * 
- * @author Jin
+ * the shunting-yard algorithm is a method for parsing mathematical expressions specified in infix notation.
+ * It can produce either a postfix notation string, also known as Reverse Polish notation (RPN)
+ * 
+ * @author JarvisJin
  *
  */
 public class ShuntingYard {

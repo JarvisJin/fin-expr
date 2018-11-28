@@ -1,5 +1,9 @@
 package io.github.jarvisjin.finexpr.operator;
 
+/**
+ * the precedence level of operators
+ *
+ */
 public class OperatorPrecedenceCode {
 
 	public static final int PLUS_MINUS = 10; // + -

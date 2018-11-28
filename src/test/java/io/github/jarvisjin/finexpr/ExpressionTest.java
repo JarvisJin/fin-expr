@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * Unit test for simple App.
+ * Unit test for Expression.
  */
 public class ExpressionTest extends TestCase {
 	/**
@@ -61,7 +61,22 @@ public class ExpressionTest extends TestCase {
 		
 		BigDecimal result = e.calculate();
 		System.out.println(result);
-		
 		assertTrue(result.equals(new BigDecimal("139.27")));
+		
+		/*
+		 * set replaceOnDuplicate==true, to replace the value of x and b, then caculate again.
+		 * the expression
+		 * = -9+5.77 + 5^5
+		 * = -3.23 + 3125 
+		 * = 3121.77
+		 * 
+		 * if you don't want to use replaceOnDuplicate, you can use Expression.clearVariables() instead.
+		 * that function will clean all variables, and you need to reset all of the variables;
+		 */
+		e.addVariable("x", new BigDecimal("-9"), true);
+		e.addVariable("b", new BigDecimal("5"), true);
+		result = e.calculate();
+		System.out.println(result);
+		assertTrue(result.equals(new BigDecimal("3121.77")));
 	}
 }
