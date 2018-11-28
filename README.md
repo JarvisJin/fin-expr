@@ -1,4 +1,5 @@
-# FinExpr: an expression evaluator  表达式计算工具
+# FinExpr: an expression evaluator (support custom functions and variables)
+# FinExpr: 一个表达式计算工具（支持添加自定义函数和变量）
 
 ## Brief introduction
 FinExpr is an expression evaluator  implemented by Java. Focus on precision, can be used in financial system.
