@@ -17,6 +17,7 @@
 package io.github.jarvisjin.finexpr.expr;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import io.github.jarvisjin.finexpr.function.Function;
@@ -37,10 +38,12 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 /**
  * new the instance of Expression to calculate.
+ * 
  * @author JarvisJin
  *
  */
@@ -67,60 +70,81 @@ public class Expression {
 		initDefaultOperator();
 	}
 
+	public void compile() {
+		if (rpn == null) {
+			rpn = ShuntingYard.generateRPN(expr, opMap);
+		}
+	}
+	
+	public Set<String> getUsedFunction(){
+		if(rpn == null) {
+			throw new RuntimeException("The Expression need to be compiled befero getUsedFunction!");
+		}
+		Set<String> usedFunc = new HashSet<>();
+		for (Token t : rpn) {
+			if(TokenType.FUNCTION.equals(t.getType())) {
+				usedFunc.add(t.getContent());
+			}
+		}
+		return usedFunc;
+	}
+	
 	public BigDecimal calculate() {
-
+		
 		Stack<Token> numStack = new Stack<Token>();
-
-		for (Token t : getRPN()) {
+		compile();
+		
+		for (Token t : rpn) {
 			switch (t.getType()) {
 
-				case OPEN_PAREN:
-				case NUMBER:
-				case VARIABLE:
-					numStack.push(t);
-					break;
-	
-				case FUNCTION:
-					Function func = funcMap.get(t.getContent());
-					if (func != null) {
-						List<BigDecimal> params = new ArrayList<BigDecimal>();
-						while (!numStack.isEmpty() && numStack.peek().getType() != TokenType.OPEN_PAREN) {
-							params.add(toNumber(numStack.pop()));
-						}
-						if (!numStack.isEmpty()) {
-							numStack.pop();
-							if (func.getArgNum() != -1 && func.getArgNum() != params.size()) {
-								throw new ExprException(
-										"Error, the number of params for function " + t.getContent() + " is incorrect.");
-							}
-							numStack.push(new NumberToken(func.apply(reverse(params), mc)));
-						} else {
-							throw new ExprException("Error, function " + t.getContent() + " without (.");
-						}
-					} else {
-						throw new ExprException("Unkown function '" + t.getContent() + "' at " + (t.getPos() + 1));
+			case OPEN_PAREN:
+			case NUMBER:
+			case VARIABLE:
+				numStack.push(t);
+				break;
+
+			case FUNCTION:
+				Function func = funcMap.get(t.getContent());
+				if (func != null) {
+					List<BigDecimal> params = new ArrayList<BigDecimal>();
+					while (!numStack.isEmpty() && numStack.peek().getType() != TokenType.OPEN_PAREN) {
+						params.add(toNumber(numStack.pop()));
 					}
-					break;
-	
-				case OPERATOR:
-					Operator op = opMap.get(t.getContent());
-					if (op != null) {
-						List<BigDecimal> params = new ArrayList<BigDecimal>();
-						while (!numStack.isEmpty() && params.size() < op.getOperandNum()) {
-							params.add(toNumber(numStack.pop()));
+					if (!numStack.isEmpty()) {
+						numStack.pop();
+						if (func.getArgNum() != -1 && func.getArgNum() != params.size()) {
+							throw new ExprException(
+									"Error, the number of params for function " + t.getContent() + " is incorrect.");
 						}
-						if (op.getOperandNum() != params.size()) {
-							throw new ExprException("Error, operator " + t.getContent() + " donot have enough operands!");
-						}
-						numStack.push(new NumberToken(op.apply(reverse(params), mc)));
-	
+						numStack.push(new NumberToken(func.apply(reverse(params), mc)));
 					} else {
-						throw new ExprException("Unkown operator '" + t.getContent() + "' at " + (t.getPos() + 1));
+						throw new ExprException("Error, function " + t.getContent() + " without (.");
 					}
-					break;
-	
-				default:
-					throw new ExprException("Invalid token in rpn position:" + (t.getPos() + 1));
+				} else {
+					throw new ExprException(
+							"Unkown function '" + t.getContent() + "' at Expression:" + (t.getPos() + 1));
+				}
+				break;
+
+			case OPERATOR:
+				Operator op = opMap.get(t.getContent());
+				if (op != null) {
+					List<BigDecimal> params = new ArrayList<BigDecimal>();
+					while (!numStack.isEmpty() && params.size() < op.getOperandNum()) {
+						params.add(toNumber(numStack.pop()));
+					}
+					if (op.getOperandNum() != params.size()) {
+						throw new ExprException("Error, operator " + t.getContent() + " donot have enough operands!");
+					}
+					numStack.push(new NumberToken(op.apply(reverse(params), mc)));
+
+				} else {
+					throw new ExprException("Unkown operator '" + t.getContent() + "' at " + (t.getPos() + 1));
+				}
+				break;
+
+			default:
+				throw new ExprException("Invalid token in rpn position:" + (t.getPos() + 1));
 			}
 		}
 
@@ -140,55 +164,41 @@ public class Expression {
 			return ((NumberToken) t).getValue();
 		}
 		switch (t.getType()) {
-			case NUMBER:
-				try {
-					return new BigDecimal(t.getContent(), mc);
-				} catch (NumberFormatException e) {
-					throw new ExprException("Invalid number at " + (t.getPos() + 1) + " \n " + e.getMessage());
-				}
-			case VARIABLE:
-				BigDecimal var = varMap.get(t.getContent());
-				if (var != null) {
-					return var;
-				} else {
-					throw new ExprException("Unkown variable '" + t.getContent() + "' at " + (t.getPos() + 1));
-				}
-			default:
-				throw new ExprException("expected token should be NUMBER or VARIABLE");
+		case NUMBER:
+			try {
+				return new BigDecimal(t.getContent(), mc);
+			} catch (NumberFormatException e) {
+				throw new ExprException("Invalid number at " + (t.getPos() + 1) + " \n " + e.getMessage());
+			}
+		case VARIABLE:
+			BigDecimal var = varMap.get(t.getContent());
+			if (var != null) {
+				return var;
+			} else {
+				throw new ExprException("Unkown variable '" + t.getContent() + "' at " + (t.getPos() + 1));
+			}
+		default:
+			throw new ExprException("expected token should be NUMBER or VARIABLE");
 		}
 	}
-	
-	private List<BigDecimal> reverse(List<BigDecimal> origin){
+
+	private List<BigDecimal> reverse(List<BigDecimal> origin) {
 		List<BigDecimal> result = new ArrayList<BigDecimal>(origin.size());
-		for(int i=origin.size()-1; i>-1; i--){
+		for (int i = origin.size() - 1; i > -1; i--) {
 			result.add(origin.get(i));
 		}
 		return result;
 	}
 
-	public String toRPN() {
-		StringBuilder rpnBuilder = new StringBuilder();
-		for (Token t : getRPN()) {
-			if (rpnBuilder.length() > 0)
-				rpnBuilder.append(" ");
-			rpnBuilder.append(t.getContent());
-		}
-		return rpnBuilder.toString();
-	}
-
-	private List<Token> getRPN() {
-		if (rpn == null) {
-			rpn = ShuntingYard.getRPN(expr, opMap);
-		}
-		return rpn;
-	}
-
 	/**
-	 * add custom operator 
+	 * add custom operator
 	 * 
-	 * @param op the {@code Operator} to be added
-	 * @param replaceOnDuplicate when {@code replaceOnDuplicate==true}, if there is already an
-	 * operator {@code oldOp} with the same symbol, {@code oldOp} will be replaced by {@code op}.
+	 * @param op
+	 *            the {@code Operator} to be added
+	 * @param replaceOnDuplicate
+	 *            when {@code replaceOnDuplicate==true}, if there is already an
+	 *            operator {@code oldOp} with the same symbol, {@code oldOp} will be
+	 *            replaced by {@code op}.
 	 */
 	public Expression addOperator(Operator op, boolean replaceOnDuplicate) {
 		assert op != null;
@@ -202,12 +212,16 @@ public class Expression {
 	public Expression addOperator(Operator op) {
 		return addOperator(op, false);
 	}
-	
+
 	/**
-	 * add custom function 
-	 * @param func the {@code Function} to be added
-	 * @param replaceOnDuplicate when {@code replaceOnDuplicate==true}, if there is already an
-	 * function {@code oldFunc} with the same symbol, {@code oldFunc} will be replaced by {@code func}.
+	 * add custom function
+	 * 
+	 * @param func
+	 *            the {@code Function} to be added
+	 * @param replaceOnDuplicate
+	 *            when {@code replaceOnDuplicate==true}, if there is already an
+	 *            function {@code oldFunc} with the same symbol, {@code oldFunc}
+	 *            will be replaced by {@code func}.
 	 * @return
 	 */
 	public Expression addFunction(Function func, boolean replaceOnDuplicate) {
@@ -222,9 +236,9 @@ public class Expression {
 	public Expression addFunction(Function func) {
 		return addFunction(func, false);
 	}
-	
+
 	/**
-	 * add custom variable 
+	 * add custom variable
 	 */
 	public Expression addVariable(String name, BigDecimal value, boolean replaceOnDuplicate) {
 		assert name != null && value != null;
@@ -238,16 +252,16 @@ public class Expression {
 	public Expression addVariable(String name, BigDecimal value) {
 		return addVariable(name, value, false);
 	}
-	
+
 	/**
-     * Removes all of the variables added to the Expression
-     * The variables in the Expression will be empty after this call returns, and can be reset
-     *
-     */
+	 * Removes all of the variables added to the Expression The variables in the
+	 * Expression will be empty after this call returns, and can be reset
+	 *
+	 */
 	public void clearVariables() {
 		varMap.clear();
 	}
-	
+
 	/**
 	 * init defaul operator +, -, *, /, ^, -(unary), +(unary)
 	 */

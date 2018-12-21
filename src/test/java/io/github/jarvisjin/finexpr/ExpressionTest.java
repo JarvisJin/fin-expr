@@ -35,13 +35,17 @@ public class ExpressionTest extends TestCase {
 	 * Test :-)
 	 */
 	public void testExpr() {
-		Expression e = new Expression("add(x,y) + a^b");
+		Expression e = new Expression("min(x,y) + a^b");
 		
-		// define function "add"
-		e.addFunction(new Function("add", 2){
+		// define function "min"
+		e.addFunction(new Function("min", 2){
 			@Override
 			public BigDecimal apply(List<BigDecimal> args, MathContext mc) {
-				return args.get(0).add(args.get(1),mc);
+				if(args.get(0).compareTo(args.get(1))<0) {
+					return args.get(0);
+				}else {
+					return args.get(1);
+				}
 			}
 		});
 		
@@ -49,10 +53,10 @@ public class ExpressionTest extends TestCase {
 		 *  set variables, 
 		 *  in this case:
 		 *  the expression 
-		 *  = add(8.5,5.77) + 5^3 
-		 *  = 8.5+5.77 + 5^3 
-		 *  = 14.27 + 125 
-		 *  = 139.27
+		 *  = min(8.5,5.77) + 5^3 
+		 *  = 5.77 + 5^3 
+		 *  = 5.77 + 125 
+		 *  = 130.77
 		 */
 		e.addVariable("x", new BigDecimal("8.5"));	
 		e.addVariable("y", new BigDecimal("5.77"));	
@@ -61,14 +65,14 @@ public class ExpressionTest extends TestCase {
 		
 		BigDecimal result = e.calculate();
 		System.out.println(result);
-		assertTrue(result.equals(new BigDecimal("139.27")));
+		assertTrue(result.equals(new BigDecimal("130.77")));
 		
 		/*
 		 * set replaceOnDuplicate==true, to replace the value of x and b, then caculate again.
 		 * the expression
-		 * = -9+5.77 + 5^5
-		 * = -3.23 + 3125 
-		 * = 3121.77
+		 * = -9 + 5^5
+		 * = -9 + 3125 
+		 * = 3116
 		 * 
 		 * if you don't want to use replaceOnDuplicate, you can use Expression.clearVariables() instead.
 		 * that function will clean all variables, and you need to reset all of the variables;
@@ -77,6 +81,6 @@ public class ExpressionTest extends TestCase {
 		e.addVariable("b", new BigDecimal("5"), true);
 		result = e.calculate();
 		System.out.println(result);
-		assertTrue(result.equals(new BigDecimal("3121.77")));
+		assertTrue(result.equals(new BigDecimal("3116")));
 	}
 }

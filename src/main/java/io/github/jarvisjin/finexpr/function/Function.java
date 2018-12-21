@@ -8,7 +8,12 @@ public abstract class Function {
 	
 	private final String name;
 	
-	/**the num of args,  -1 means variable */
+	/**
+	 * the num of args,  -1 means variable 
+	 * 该函数接受的参数个数:
+	 * 若 argNum>0 或 argNum==0 代表固定参数个数，Expression计算时会验证个数是否匹配
+	 * 若 argNum == -1 代表该函数支持可变参数个数，不校验个数是否匹配。
+	 * */
 	private final int argNum;
 	
 	public Function(String name, int argNum){

@@ -20,13 +20,13 @@ import io.github.jarvisjin.finexpr.operator.Operator;
  */
 public class ShuntingYard {
 
-	public static List<Token> getRPN(String expression, Map<String, Operator> opMap) {
+	public static List<Token> generateRPN(String expression, Map<String, Operator> opMap) {
 
 		List<Token> output = new LinkedList<Token>();
 		Tokenizer tokenizer = new Tokenizer(expression, opMap.keySet());
 		Stack<Token> opStack = new Stack<Token>();
 		
-		Token lastToken = null;
+		Token previousToken = null;
 		
 		while (tokenizer.hasNext()) {
 			Token t = tokenizer.next();
@@ -34,8 +34,8 @@ public class ShuntingYard {
 			
 				case NUMBER:
 				case VARIABLE:
-					if(lastToken!=null && 
-						( lastToken.getType()==TokenType.NUMBER || lastToken.getType()==TokenType.VARIABLE)
+					if(previousToken!=null && 
+						( previousToken.getType()==TokenType.NUMBER || previousToken.getType()==TokenType.VARIABLE)
 					){
 						throw new ExprException("Parse error! missing operator or separator ',' at "+(t.getPos()+1));
 					}
@@ -70,7 +70,7 @@ public class ShuntingYard {
 					break;
 				case OPEN_PAREN:
 					opStack.push(t);
-					if(lastToken!=null && lastToken.getType()==TokenType.FUNCTION){
+					if(previousToken!=null && previousToken.getType()==TokenType.FUNCTION){
 						output.add(t); // to determine the number of parameters of the functions with variable params
 					}
 					break;
@@ -98,7 +98,7 @@ public class ShuntingYard {
 					break;
 			}
 			
-			lastToken = t;
+			previousToken = t;
 		}
 		
 		while(!opStack.isEmpty()){
