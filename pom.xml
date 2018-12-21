@@ -4,7 +4,7 @@
 
 	<groupId>io.github.jarvisjin</groupId>
 	<artifactId>fin-expr</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.1</version>
 	<packaging>jar</packaging>
 
 	<name>fin-expr</name>
