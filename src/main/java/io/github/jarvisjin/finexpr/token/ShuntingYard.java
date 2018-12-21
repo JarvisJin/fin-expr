@@ -12,18 +12,21 @@ import io.github.jarvisjin.finexpr.operator.Operator;
  * Shunting-yard algorithm https://en.wikipedia.org/wiki/Shunting-yard_algorithm
  * https://zh.wikipedia.org/wiki/%E8%B0%83%E5%BA%A6%E5%9C%BA%E7%AE%97%E6%B3%95
  * 
- * @author Jin
+ * the shunting-yard algorithm is a method for parsing mathematical expressions specified in infix notation.
+ * It can produce either a postfix notation string, also known as Reverse Polish notation (RPN)
+ * 
+ * @author JarvisJin
  *
  */
 public class ShuntingYard {
 
-	public static List<Token> getRPN(String expression, Map<String, Operator> opMap) {
+	public static List<Token> generateRPN(String expression, Map<String, Operator> opMap) {
 
 		List<Token> output = new LinkedList<Token>();
 		Tokenizer tokenizer = new Tokenizer(expression, opMap.keySet());
 		Stack<Token> opStack = new Stack<Token>();
 		
-		Token lastToken = null;
+		Token previousToken = null;
 		
 		while (tokenizer.hasNext()) {
 			Token t = tokenizer.next();
@@ -31,8 +34,8 @@ public class ShuntingYard {
 			
 				case NUMBER:
 				case VARIABLE:
-					if(lastToken!=null && 
-						( lastToken.getType()==TokenType.NUMBER || lastToken.getType()==TokenType.VARIABLE)
+					if(previousToken!=null && 
+						( previousToken.getType()==TokenType.NUMBER || previousToken.getType()==TokenType.VARIABLE)
 					){
 						throw new ExprException("Parse error! missing operator or separator ',' at "+(t.getPos()+1));
 					}
@@ -67,7 +70,7 @@ public class ShuntingYard {
 					break;
 				case OPEN_PAREN:
 					opStack.push(t);
-					if(lastToken!=null && lastToken.getType()==TokenType.FUNCTION){
+					if(previousToken!=null && previousToken.getType()==TokenType.FUNCTION){
 						output.add(t); // to determine the number of parameters of the functions with variable params
 					}
 					break;
@@ -95,7 +98,7 @@ public class ShuntingYard {
 					break;
 			}
 			
-			lastToken = t;
+			previousToken = t;
 		}
 		
 		while(!opStack.isEmpty()){

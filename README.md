@@ -17,7 +17,7 @@ Maven Repo:http://repo1.maven.org/maven2/io/github/jarvisjin/fin-expr
 <dependency>
   <groupId>io.github.jarvisjin</groupId>
   <artifactId>fin-expr</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
 </dependency>
 ```
 
@@ -39,36 +39,48 @@ Expression e = new Expression("345000*0.0157");
 BigDecimal result = e.calculate(); // result 5416.5000
 ```
   
-Custom Function & Add variables: 使用自定义函数 add()、使用变量 x, y, a, b
+Custom Function & Add variables: 使用自定义函数 min()、使用变量 x, y, a, b
 
 ```Java
-Expression e = new Expression("add(x,y) + a^b");
-	
-// define function "add" 自定义函数 add
-e.addFunction(new Function("add", 2){
+Expression e = new Expression("min(x,y) + a^b");
+
+// define function "min"
+e.addFunction(new Function("min", 2){
 	@Override
 	public BigDecimal apply(List<BigDecimal> args, MathContext mc) {
 		return args.get(0).add(args.get(1),mc);
 	}
 });
 
-// set variables,  设置变量的值
+/*
+ *  set variables, 
+ *  in this case:
+ *  the expression 
+ *  = min(8.5,5.77) + 5^3 
+ *  = 5.77 + 5^3 
+ *  = 5.77 + 125 
+ *  = 130.77
+ */
 e.addVariable("x", new BigDecimal("8.5"));	
 e.addVariable("y", new BigDecimal("5.77"));	
 e.addVariable("a", new BigDecimal("5"));	
 e.addVariable("b", new BigDecimal("3"));	
-/*
- *  in this case:
- *  the expression 
- *  = add(8.5,5.77) + 5^3 
- *  = 8.5+5.77 + 5^3 
- *  = 14.27 + 125 
- *  = 139.27
-*/
-BigDecimal result = e.calculate();
-System.out.println(result);
 
-assertTrue(result.equals(new BigDecimal("139.27")));
+BigDecimal result = e.calculate();  // result=130.77
+
+/*
+ * set replaceOnDuplicate==true, to replace the value of x and b, then caculate again.
+ * the expression
+ * = -9 + 5^5
+ * = -9 + 3125 
+ * = 3116
+ * 
+ * if you don't want to use replaceOnDuplicate, you can use Expression.clearVariables() instead.
+ * that function will clean all variables, and you need to reset all of the variables;
+ */
+e.addVariable("x", new BigDecimal("-9"), true);
+e.addVariable("b", new BigDecimal("5"), true);
+result = e.calculate();  // result=3116
 ```
   
 Custom Precision & RoundingMode: 自定义精度和舍入模式

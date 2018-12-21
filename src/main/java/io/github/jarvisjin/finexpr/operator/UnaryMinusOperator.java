@@ -6,13 +6,13 @@ import java.util.List;
 
 import io.github.jarvisjin.finexpr.expr.ExprException;
 
-public class UnaryMinuxOperator extends Operator {
+public class UnaryMinusOperator extends Operator {
 
 	public static final String SYMBOL = "-u";
 
-	private static UnaryMinuxOperator instance = new UnaryMinuxOperator();
+	private static UnaryMinusOperator instance = new UnaryMinusOperator();
 
-	private UnaryMinuxOperator() {
+	private UnaryMinusOperator() {
 		super(SYMBOL, 1, false, OperatorPrecedenceCode.UNARY_PLUS_MINUS);
 	}
 
@@ -23,7 +23,7 @@ public class UnaryMinuxOperator extends Operator {
 		return args.get(0).negate(mc);
 	}
 
-	public static UnaryMinuxOperator getInstance() {
+	public static UnaryMinusOperator getInstance() {
 		return instance;
 	}
 }

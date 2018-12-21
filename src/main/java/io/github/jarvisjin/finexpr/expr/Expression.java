@@ -1,6 +1,23 @@
+/*
+ * Copyright 2002-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.github.jarvisjin.finexpr.expr;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import io.github.jarvisjin.finexpr.function.Function;
@@ -10,7 +27,7 @@ import io.github.jarvisjin.finexpr.operator.MultiplyOperator;
 import io.github.jarvisjin.finexpr.operator.Operator;
 import io.github.jarvisjin.finexpr.operator.PlusOperator;
 import io.github.jarvisjin.finexpr.operator.PowOperator;
-import io.github.jarvisjin.finexpr.operator.UnaryMinuxOperator;
+import io.github.jarvisjin.finexpr.operator.UnaryMinusOperator;
 import io.github.jarvisjin.finexpr.operator.UnaryPlusOperator;
 import io.github.jarvisjin.finexpr.token.NumberToken;
 import io.github.jarvisjin.finexpr.token.ShuntingYard;
@@ -21,8 +38,15 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
+/**
+ * new the instance of Expression to calculate.
+ * 
+ * @author JarvisJin
+ *
+ */
 public class Expression {
 
 	/** the origin infix expression */
@@ -46,60 +70,81 @@ public class Expression {
 		initDefaultOperator();
 	}
 
+	public void compile() {
+		if (rpn == null) {
+			rpn = ShuntingYard.generateRPN(expr, opMap);
+		}
+	}
+	
+	public Set<String> getUsedFunction(){
+		if(rpn == null) {
+			throw new RuntimeException("The Expression need to be compiled befero getUsedFunction!");
+		}
+		Set<String> usedFunc = new HashSet<>();
+		for (Token t : rpn) {
+			if(TokenType.FUNCTION.equals(t.getType())) {
+				usedFunc.add(t.getContent());
+			}
+		}
+		return usedFunc;
+	}
+	
 	public BigDecimal calculate() {
-
+		
 		Stack<Token> numStack = new Stack<Token>();
-
-		for (Token t : getRPN()) {
+		compile();
+		
+		for (Token t : rpn) {
 			switch (t.getType()) {
 
-				case OPEN_PAREN:
-				case NUMBER:
-				case VARIABLE:
-					numStack.push(t);
-					break;
-	
-				case FUNCTION:
-					Function func = funcMap.get(t.getContent());
-					if (func != null) {
-						List<BigDecimal> params = new ArrayList<BigDecimal>();
-						while (!numStack.isEmpty() && numStack.peek().getType() != TokenType.OPEN_PAREN) {
-							params.add(toNumber(numStack.pop()));
-						}
-						if (!numStack.isEmpty()) {
-							numStack.pop();
-							if (func.getArgNum() != -1 && func.getArgNum() != params.size()) {
-								throw new ExprException(
-										"Error, the number of params for function " + t.getContent() + " is incorrect.");
-							}
-							numStack.push(new NumberToken(func.apply(reverse(params), mc)));
-						} else {
-							throw new ExprException("Error, function " + t.getContent() + " without (.");
-						}
-					} else {
-						throw new ExprException("Unkown function '" + t.getContent() + "' at " + (t.getPos() + 1));
+			case OPEN_PAREN:
+			case NUMBER:
+			case VARIABLE:
+				numStack.push(t);
+				break;
+
+			case FUNCTION:
+				Function func = funcMap.get(t.getContent());
+				if (func != null) {
+					List<BigDecimal> params = new ArrayList<BigDecimal>();
+					while (!numStack.isEmpty() && numStack.peek().getType() != TokenType.OPEN_PAREN) {
+						params.add(toNumber(numStack.pop()));
 					}
-					break;
-	
-				case OPERATOR:
-					Operator op = opMap.get(t.getContent());
-					if (op != null) {
-						List<BigDecimal> params = new ArrayList<BigDecimal>();
-						while (!numStack.isEmpty() && params.size() < op.getOperandNum()) {
-							params.add(toNumber(numStack.pop()));
+					if (!numStack.isEmpty()) {
+						numStack.pop();
+						if (func.getArgNum() != -1 && func.getArgNum() != params.size()) {
+							throw new ExprException(
+									"Error, the number of params for function " + t.getContent() + " is incorrect.");
 						}
-						if (op.getOperandNum() != params.size()) {
-							throw new ExprException("Error, operator " + t.getContent() + " donot have enough operands!");
-						}
-						numStack.push(new NumberToken(op.apply(reverse(params), mc)));
-	
+						numStack.push(new NumberToken(func.apply(reverse(params), mc)));
 					} else {
-						throw new ExprException("Unkown operator '" + t.getContent() + "' at " + (t.getPos() + 1));
+						throw new ExprException("Error, function " + t.getContent() + " without (.");
 					}
-					break;
-	
-				default:
-					throw new ExprException("Invalid token in rpn position:" + (t.getPos() + 1));
+				} else {
+					throw new ExprException(
+							"Unkown function '" + t.getContent() + "' at Expression:" + (t.getPos() + 1));
+				}
+				break;
+
+			case OPERATOR:
+				Operator op = opMap.get(t.getContent());
+				if (op != null) {
+					List<BigDecimal> params = new ArrayList<BigDecimal>();
+					while (!numStack.isEmpty() && params.size() < op.getOperandNum()) {
+						params.add(toNumber(numStack.pop()));
+					}
+					if (op.getOperandNum() != params.size()) {
+						throw new ExprException("Error, operator " + t.getContent() + " donot have enough operands!");
+					}
+					numStack.push(new NumberToken(op.apply(reverse(params), mc)));
+
+				} else {
+					throw new ExprException("Unkown operator '" + t.getContent() + "' at " + (t.getPos() + 1));
+				}
+				break;
+
+			default:
+				throw new ExprException("Invalid token in rpn position:" + (t.getPos() + 1));
 			}
 		}
 
@@ -119,59 +164,41 @@ public class Expression {
 			return ((NumberToken) t).getValue();
 		}
 		switch (t.getType()) {
-			case NUMBER:
-				try {
-					return new BigDecimal(t.getContent(), mc);
-				} catch (NumberFormatException e) {
-					throw new ExprException("Invalid number at " + (t.getPos() + 1) + " \n " + e.getMessage());
-				}
-			case VARIABLE:
-				BigDecimal var = varMap.get(t.getContent());
-				if (var != null) {
-					return var;
-				} else {
-					throw new ExprException("Unkown variable '" + t.getContent() + "' at " + (t.getPos() + 1));
-				}
-			default:
-				throw new ExprException("expected token should be NUMBER or VARIABLE");
+		case NUMBER:
+			try {
+				return new BigDecimal(t.getContent(), mc);
+			} catch (NumberFormatException e) {
+				throw new ExprException("Invalid number at " + (t.getPos() + 1) + " \n " + e.getMessage());
+			}
+		case VARIABLE:
+			BigDecimal var = varMap.get(t.getContent());
+			if (var != null) {
+				return var;
+			} else {
+				throw new ExprException("Unkown variable '" + t.getContent() + "' at " + (t.getPos() + 1));
+			}
+		default:
+			throw new ExprException("expected token should be NUMBER or VARIABLE");
 		}
 	}
-	
-	private List<BigDecimal> reverse(List<BigDecimal> origin){
+
+	private List<BigDecimal> reverse(List<BigDecimal> origin) {
 		List<BigDecimal> result = new ArrayList<BigDecimal>(origin.size());
-		for(int i=origin.size()-1; i>-1; i--){
+		for (int i = origin.size() - 1; i > -1; i--) {
 			result.add(origin.get(i));
 		}
 		return result;
 	}
 
-	public String toRPN() {
-		StringBuilder rpnBuilder = new StringBuilder();
-		for (Token t : getRPN()) {
-			if (rpnBuilder.length() > 0)
-				rpnBuilder.append(" ");
-			rpnBuilder.append(t.getContent());
-		}
-		return rpnBuilder.toString();
-	}
-
-	private List<Token> getRPN() {
-		if (rpn == null) {
-			rpn = ShuntingYard.getRPN(expr, opMap);
-		}
-		return rpn;
-	}
-
-	public String getExpr() {
-		return expr;
-	}
-
 	/**
-	 * add custom operator if replaceOnDuplicate=true, when there is already an
-	 * operator 'oldOp' with the same symbol, oldOp will be replaced.
+	 * add custom operator
 	 * 
 	 * @param op
+	 *            the {@code Operator} to be added
 	 * @param replaceOnDuplicate
+	 *            when {@code replaceOnDuplicate==true}, if there is already an
+	 *            operator {@code oldOp} with the same symbol, {@code oldOp} will be
+	 *            replaced by {@code op}.
 	 */
 	public Expression addOperator(Operator op, boolean replaceOnDuplicate) {
 		assert op != null;
@@ -186,6 +213,17 @@ public class Expression {
 		return addOperator(op, false);
 	}
 
+	/**
+	 * add custom function
+	 * 
+	 * @param func
+	 *            the {@code Function} to be added
+	 * @param replaceOnDuplicate
+	 *            when {@code replaceOnDuplicate==true}, if there is already an
+	 *            function {@code oldFunc} with the same symbol, {@code oldFunc}
+	 *            will be replaced by {@code func}.
+	 * @return
+	 */
 	public Expression addFunction(Function func, boolean replaceOnDuplicate) {
 		assert func != null;
 		if (funcMap.containsKey(func.getName()) && (!replaceOnDuplicate)) {
@@ -199,6 +237,9 @@ public class Expression {
 		return addFunction(func, false);
 	}
 
+	/**
+	 * add custom variable
+	 */
 	public Expression addVariable(String name, BigDecimal value, boolean replaceOnDuplicate) {
 		assert name != null && value != null;
 		if (varMap.containsKey(name) && (!replaceOnDuplicate)) {
@@ -212,13 +253,25 @@ public class Expression {
 		return addVariable(name, value, false);
 	}
 
+	/**
+	 * Removes all of the variables added to the Expression The variables in the
+	 * Expression will be empty after this call returns, and can be reset
+	 *
+	 */
+	public void clearVariables() {
+		varMap.clear();
+	}
+
+	/**
+	 * init defaul operator +, -, *, /, ^, -(unary), +(unary)
+	 */
 	private void initDefaultOperator() {
 		opMap.put(PlusOperator.SYMBOL, PlusOperator.getInstance());
 		opMap.put(MinusOperator.SYMBOL, MinusOperator.getInstance());
 		opMap.put(MultiplyOperator.SYMBOL, MultiplyOperator.getInstance());
 		opMap.put(DivideOperator.SYMBOL, DivideOperator.getInstance());
 		opMap.put(PowOperator.SYMBOL, PowOperator.getInstance());
-		opMap.put(UnaryMinuxOperator.SYMBOL, UnaryMinuxOperator.getInstance());
+		opMap.put(UnaryMinusOperator.SYMBOL, UnaryMinusOperator.getInstance());
 		opMap.put(UnaryPlusOperator.SYMBOL, UnaryPlusOperator.getInstance());
 	}
 }
