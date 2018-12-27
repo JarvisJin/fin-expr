@@ -43,12 +43,16 @@ Custom Function & Add variables: 使用自定义函数 min()、使用变量 x, y
 
 ```Java
 Expression e = new Expression("min(x,y) + a^b");
-
+		
 // define function "min"
 e.addFunction(new Function("min", 2){
 	@Override
 	public BigDecimal apply(List<BigDecimal> args, MathContext mc) {
-		return args.get(0).add(args.get(1),mc);
+		if(args.get(0).compareTo(args.get(1))<0) {
+			return args.get(0);
+		}else {
+			return args.get(1);
+		}
 	}
 });
 
@@ -66,7 +70,7 @@ e.addVariable("y", new BigDecimal("5.77"));
 e.addVariable("a", new BigDecimal("5"));	
 e.addVariable("b", new BigDecimal("3"));	
 
-BigDecimal result = e.calculate();  // result=130.77
+BigDecimal result = e.calculate(); // 130.77
 
 /*
  * set replaceOnDuplicate==true, to replace the value of x and b, then caculate again.
@@ -80,7 +84,7 @@ BigDecimal result = e.calculate();  // result=130.77
  */
 e.addVariable("x", new BigDecimal("-9"), true);
 e.addVariable("b", new BigDecimal("5"), true);
-result = e.calculate();  // result=3116
+result = e.calculate(); // 3116
 ```
   
 Custom Precision & RoundingMode: 自定义精度和舍入模式
